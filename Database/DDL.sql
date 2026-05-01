@@ -142,7 +142,7 @@ ALTER TABLE NOTIFICATIONPREFERENCE  ADD CONSTRAINT uq_notifpref_user_channel_eve
 -- SECTION 3: CHECK CONSTRAINTS
 -- ============================================================
 
-ALTER TABLE "USER"               ADD CONSTRAINT chk_user_role                  CHECK (role IN ('admin', 'doctor', 'patient'));
+ALTER TABLE "USER"               ADD CONSTRAINT chk_user_role                  CHECK (role IN ('admin', 'doctor', 'patient', 'staff'));
 ALTER TABLE PATIENT              ADD CONSTRAINT chk_patient_gender              CHECK (gender IN ('male', 'female'));
 ALTER TABLE APPOINTMENT          ADD CONSTRAINT chk_appointment_status          CHECK (status IN ('pending', 'confirmed', 'cancelled', 'completed'));
 ALTER TABLE INVOICE              ADD CONSTRAINT chk_invoice_total_amount        CHECK (total_amount >= 0);
