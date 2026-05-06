@@ -20,7 +20,7 @@ export default function PatientsPage() {
   const isDoctor = role === "DOCTOR";
   const [search, setSearch] = useState("");
   const [showDialog, setShowDialog] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", password: "patient123", dateOfBirth: "", gender: "MALE", address: "", bloodType: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "patient123", dateOfBirth: "", gender: "MALE", address: "", bloodType: "", phoneNumber: "" });
   const [error, setError] = useState<string | null>(null);
   const qc = useQueryClient();
 
@@ -38,7 +38,7 @@ export default function PatientsPage() {
         qc.invalidateQueries({ queryKey: getListPatientsQueryKey() });
         setShowDialog(false);
         setError(null);
-        setForm({ name: "", email: "", password: "patient123", dateOfBirth: "", gender: "MALE", address: "", bloodType: "" });
+        setForm({ name: "", email: "", password: "patient123", dateOfBirth: "", gender: "MALE", address: "", bloodType: "", phoneNumber: "" });
       },
       onError: (err: any) => {
         setError(err?.message ?? "Failed to create patient profile");
@@ -71,7 +71,7 @@ export default function PatientsPage() {
     if (!form.dateOfBirth) { setError("Date of birth is required"); return; }
     setError(null);
     createUserMutation.mutate({
-      data: { name: form.name, email: form.email, password: form.password, role: "PATIENT" }
+      data: { name: form.name, email: form.email, password: form.password, role: "PATIENT", phoneNumber: form.phoneNumber || undefined }
     });
   };
 
@@ -207,6 +207,10 @@ export default function PatientsPage() {
                 <div className="space-y-2">
                   <Label>Address</Label>
                   <Input value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} placeholder="123 Main St" />
+                </div>
+                <div className="col-span-2 space-y-2">
+                  <Label>Phone Number</Label>
+                  <Input type="tel" value={form.phoneNumber} onChange={e => setForm(f => ({ ...f, phoneNumber: e.target.value }))} placeholder="+1 555 000 0000" />
                 </div>
               </div>
             </div>

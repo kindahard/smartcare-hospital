@@ -14,6 +14,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class PrescriptionService {
 
@@ -58,7 +59,6 @@ public class PrescriptionService {
             throw new IllegalArgumentException("issueDate is required");
         }
 
-        // consultationFee is optional — if provided we auto-create an invoice
         Object feeObj = body.get("consultationFee");
         BigDecimal consultationFee = null;
         if (feeObj != null) {
@@ -92,7 +92,6 @@ public class PrescriptionService {
 
         Prescription saved = prescriptionRepository.save(p);
 
-        // Mark appointment as COMPLETED and auto-create invoice if fee provided
         if (record.getAppointment() != null) {
             Appointment appointment = record.getAppointment();
             appointment.setStatus(AppointmentStatus.COMPLETED);

@@ -16,7 +16,7 @@ export default function DoctorsPage() {
   const [search, setSearch] = useState("");
   const [specialty, setSpecialty] = useState("");
   const [showDialog, setShowDialog] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", password: "doctor123", specialty: "Cardiology", licenseNumber: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "doctor123", specialty: "Cardiology", licenseNumber: "", phoneNumber: "" });
   const [error, setError] = useState<string | null>(null);
   const qc = useQueryClient();
 
@@ -28,7 +28,7 @@ export default function DoctorsPage() {
         qc.invalidateQueries({ queryKey: getListDoctorsQueryKey() });
         setShowDialog(false);
         setError(null);
-        setForm({ name: "", email: "", password: "doctor123", specialty: "Cardiology", licenseNumber: "" });
+        setForm({ name: "", email: "", password: "doctor123", specialty: "Cardiology", licenseNumber: "", phoneNumber: "" });
       },
       onError: (err: any) => {
         setError(err?.message ?? "Failed to create doctor profile");
@@ -54,7 +54,7 @@ export default function DoctorsPage() {
     if (!form.email.trim()) { setError("Email is required"); return; }
     if (!form.licenseNumber.trim()) { setError("License number is required"); return; }
     setError(null);
-    createUserMutation.mutate({ data: { name: form.name, email: form.email, password: form.password, role: "DOCTOR" } });
+    createUserMutation.mutate({ data: { name: form.name, email: form.email, password: form.password, role: "DOCTOR", phoneNumber: form.phoneNumber || undefined } });
   };
 
   const isPending = createUserMutation.isPending || createDoctorMutation.isPending;
@@ -153,6 +153,10 @@ export default function DoctorsPage() {
               <div className="space-y-2">
                 <Label>License Number <span className="text-destructive">*</span></Label>
                 <Input value={form.licenseNumber} onChange={e => setForm(f => ({ ...f, licenseNumber: e.target.value }))} placeholder="LIC-12345" />
+              </div>
+              <div className="col-span-2 space-y-2">
+                <Label>Phone Number</Label>
+                <Input type="tel" value={form.phoneNumber} onChange={e => setForm(f => ({ ...f, phoneNumber: e.target.value }))} placeholder="+1 555 000 0000" />
               </div>
             </div>
           </div>
