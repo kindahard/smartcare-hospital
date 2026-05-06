@@ -1,4 +1,4 @@
-D:\smartcare\smartcare-hospital\artifacts\api-server\src\test\java\com\smartcare\controller\TestSecurityConfig.java
-D:\smartcare\smartcare-hospital\artifacts\api-server\src\test\java\com\smartcare\service\PrescriptionServiceTest.java
-D:\smartcare\smartcare-hospital\artifacts\api-server\src\test\java\com\smartcare\service\DrugServiceTest.java
-D:\smartcare\smartcare-hospital\artifacts\api-server\src\test\java\com\smartcare\controller\DrugControllerTest.java
+/home/runner/workspace/artifacts/api-server/src/test/java/com/smartcare/service/DrugServiceTest.java
+/home/runner/workspace/artifacts/api-server/src/test/java/com/smartcare/controller/TestSecurityConfig.java
+/home/runner/workspace/artifacts/api-server/src/test/java/com/smartcare/service/PrescriptionServiceTest.java
+/home/runner/workspace/artifacts/api-server/src/test/java/com/smartcare/controller/DrugControllerTest.java
