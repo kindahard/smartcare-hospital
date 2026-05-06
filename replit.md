@@ -50,6 +50,28 @@ SmartCare is a full Hospital Management System built for Helwan University Team 
 - Backend: Maven Spring Boot via workflow `artifacts/api-server: API Server`
 - Frontend: Vite dev server via workflow `artifacts/smartcare: web`
 
+## Docker (Self-Hosted)
+Run the full stack with a single command:
+```bash
+docker compose up -d
+```
+- Frontend → http://localhost (port 80)
+- Backend API → http://localhost:8080/api
+- pgAdmin → http://localhost:5050
+
+Copy `.env.example` to `.env` to override defaults. All env vars have sensible defaults so `.env` is optional.
+
+After first startup, optionally load dummy data:
+```bash
+docker exec -i smartcare_db psql -U smartcare -d smartcare < smartcare_dummy_data.sql
+```
+
+**Docker files:**
+- `artifacts/api-server/Dockerfile` — Java 21 multi-stage build (Maven → JRE alpine)
+- `artifacts/smartcare/Dockerfile` — pnpm build → nginx static serve
+- `artifacts/smartcare/nginx.conf` — serves React SPA + proxies `/api` → backend
+- `.dockerignore` — excludes node_modules, dist, target, etc.
+
 ## Notes
 - JDBC URL is constructed from individual PG vars (`jdbc:postgresql://$PGHOST:$PGPORT/$PGDATABASE`), NOT from `DATABASE_URL` which uses an incompatible format
 - All JPA enums use `@Enumerated(EnumType.STRING)`
