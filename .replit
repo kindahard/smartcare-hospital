@@ -1,0 +1,51 @@
+modules = ["nodejs-20", "java-graalvm22.3", "python-3.12", "web"]
+[agent]
+expertMode = true
+stack = "BEST_EFFORT_FALLBACK"
+
+[nix]
+channel = "stable-25_05"
+
+[userenv]
+
+[userenv.shared]
+PORT = "5000"
+BASE_PATH = "/"
+JWT_SECRET = "smartcare-super-secret-jwt-key-2026-helwan-university"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Start application"
+
+[[workflows.workflow]]
+name = "Start application"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "bash start.sh"
+waitForPort = 5000
+
+[workflows.workflow.metadata]
+outputType = "webview"
+
+[[ports]]
+localPort = 5000
+externalPort = 80
+
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
+[deployment]
+deploymentTarget = "vm"
+run = ["bash", "start.sh"]
+build = ["bash", "-c", "cd artifacts/api-server && mvn package -DskipTests -q"]
