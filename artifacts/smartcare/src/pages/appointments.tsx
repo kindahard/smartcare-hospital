@@ -13,7 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useQueryClient, useQuery } from "@tanstack/react-query";
-import { Plus, Calendar, Clock, CheckCircle, XCircle, AlertCircle, Stethoscope } from "lucide-react";
+import { Plus, Calendar, Clock, CheckCircle, XCircle, AlertCircle, Stethoscope, StickyNote } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 
 const STATUS_COLORS: Record<string, string> = {
@@ -60,6 +60,9 @@ export default function AppointmentsPage() {
 
   // Admin booking state (simple form)
   const [adminForm, setAdminForm] = useState({ patientId: "", doctorId: "", dateTime: "", notes: "" });
+
+  // Doctor notes viewer
+  const [viewingAppointment, setViewingAppointment] = useState<any>(null);
 
   const qc = useQueryClient();
 
@@ -262,6 +265,11 @@ export default function AppointmentsPage() {
                     </td>
                     <td className="p-4">
                       <div className="flex gap-1">
+                        {isDoctor && (
+                          <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => setViewingAppointment(a)}>
+                            <StickyNote className="w-3 h-3" /> Notes
+                          </Button>
+                        )}
                         {isDoctor && a.status === "PENDING" && (
                           <>
                             <Button size="sm" variant="outline" className="h-7 text-xs gap-1 text-green-600 hover:text-green-700" onClick={() => handleStatusChange(a.appointmentId, "CONFIRMED")}>
@@ -528,6 +536,36 @@ export default function AppointmentsPage() {
                 {createMutation.isPending ? "Booking..." : "Book Appointment"}
               </Button>
             )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Doctor notes viewer */}
+      <Dialog open={!!viewingAppointment} onOpenChange={open => { if (!open) setViewingAppointment(null); }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <StickyNote className="w-4 h-4" /> Patient Notes
+            </DialogTitle>
+          </DialogHeader>
+          {viewingAppointment && (
+            <div className="space-y-3 py-1">
+              <div className="text-sm text-muted-foreground space-y-0.5">
+                <p><span className="font-medium text-foreground">Patient:</span> {viewingAppointment.patientName}</p>
+                <p><span className="font-medium text-foreground">Date:</span> {viewingAppointment.dateTime ? new Date(viewingAppointment.dateTime).toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" }) : "—"}</p>
+                <p><span className="font-medium text-foreground">Time:</span> {viewingAppointment.dateTime ? new Date(viewingAppointment.dateTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : "—"}</p>
+              </div>
+              <div className="rounded-lg border p-4 bg-muted/40">
+                {viewingAppointment.notes?.trim() ? (
+                  <p className="text-sm whitespace-pre-wrap">{viewingAppointment.notes}</p>
+                ) : (
+                  <p className="text-sm text-muted-foreground italic">No notes written</p>
+                )}
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setViewingAppointment(null)}>Close</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
