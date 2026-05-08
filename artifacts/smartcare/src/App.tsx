@@ -29,7 +29,11 @@ const queryClient = new QueryClient({
   },
 });
 
-function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
+function ProtectedRoute({
+  component: Component,
+}: {
+  component: React.ComponentType;
+}) {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) return <Redirect to="/login" />;
   return (

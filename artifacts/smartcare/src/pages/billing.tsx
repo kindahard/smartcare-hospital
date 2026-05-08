@@ -11,8 +11,20 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { CreditCard, DollarSign, TrendingUp, Receipt } from "lucide-react";
 import { useAuth } from "@/lib/auth";
@@ -29,13 +41,13 @@ export default function BillingPage() {
   const [location] = useLocation();
   const isPatient = role === "PATIENT";
   const isDoctor = role === "DOCTOR";
-  const isAdmin = role === "ADMIN";
+  // const isAdmin = role === "ADMIN";
 
   // Derive view mode from path or role
   const mode = useMemo(() => {
-    if (location.startsWith("/billing/profit")) return "profit";
-    if (location.startsWith("/billing/revenue")) return "revenue";
-    if (location.startsWith("/billing/bills")) return "bills";
+    // if (location.startsWith("/billing/profit")) return "profit";
+    // if (location.startsWith("/billing/revenue")) return "revenue";
+    // if (location.startsWith("/billing/bills")) return "bills";
     if (isDoctor) return "profit";
     if (isPatient) return "bills";
     return "revenue";
@@ -113,34 +125,86 @@ export default function BillingPage() {
     .filter((i) => i.status === "PENDING")
     .reduce((sum, i) => sum + Number(i.totalAmount), 0);
 
-  const totalAll = invoiceList
-    .reduce((sum, i) => sum + Number(i.totalAmount), 0);
+  const totalAll = invoiceList.reduce(
+    (sum, i) => sum + Number(i.totalAmount),
+    0,
+  );
 
   // Summary card config per mode
   const summaryCards = useMemo(() => {
     if (mode === "bills") {
       return [
-        { label: "Total Billed", value: `$${totalAll.toLocaleString("en", { minimumFractionDigits: 2 })}`, icon: Receipt, color: "bg-blue-100 text-blue-600" },
-        { label: "Paid", value: `$${totalPaid.toLocaleString("en", { minimumFractionDigits: 2 })}`, icon: DollarSign, color: "bg-green-100 text-green-600" },
-        { label: "Outstanding", value: `$${totalPending.toLocaleString("en", { minimumFractionDigits: 2 })}`, icon: CreditCard, color: "bg-amber-100 text-amber-600" },
+        {
+          label: "Total Billed",
+          value: `$${totalAll.toLocaleString("en", { minimumFractionDigits: 2 })}`,
+          icon: Receipt,
+          color: "bg-blue-100 text-blue-600",
+        },
+        {
+          label: "Paid",
+          value: `$${totalPaid.toLocaleString("en", { minimumFractionDigits: 2 })}`,
+          icon: DollarSign,
+          color: "bg-green-100 text-green-600",
+        },
+        {
+          label: "Outstanding",
+          value: `$${totalPending.toLocaleString("en", { minimumFractionDigits: 2 })}`,
+          icon: CreditCard,
+          color: "bg-amber-100 text-amber-600",
+        },
       ];
     }
     if (mode === "profit") {
       return [
-        { label: "Total Earnings", value: `$${totalAll.toLocaleString("en", { minimumFractionDigits: 2 })}`, icon: TrendingUp, color: "bg-emerald-100 text-emerald-600" },
-        { label: "Collected", value: `$${totalPaid.toLocaleString("en", { minimumFractionDigits: 2 })}`, icon: DollarSign, color: "bg-green-100 text-green-600" },
-        { label: "Awaiting Payment", value: `$${totalPending.toLocaleString("en", { minimumFractionDigits: 2 })}`, icon: CreditCard, color: "bg-amber-100 text-amber-600" },
+        {
+          label: "Total Earnings",
+          value: `$${totalAll.toLocaleString("en", { minimumFractionDigits: 2 })}`,
+          icon: TrendingUp,
+          color: "bg-emerald-100 text-emerald-600",
+        },
+        {
+          label: "Collected",
+          value: `$${totalPaid.toLocaleString("en", { minimumFractionDigits: 2 })}`,
+          icon: DollarSign,
+          color: "bg-green-100 text-green-600",
+        },
+        {
+          label: "Awaiting Payment",
+          value: `$${totalPending.toLocaleString("en", { minimumFractionDigits: 2 })}`,
+          icon: CreditCard,
+          color: "bg-amber-100 text-amber-600",
+        },
       ];
     }
     // admin revenue
     return [
-      { label: "Total Revenue", value: `$${totalAll.toLocaleString("en", { minimumFractionDigits: 2 })}`, icon: TrendingUp, color: "bg-emerald-100 text-emerald-600" },
-      { label: "Collected", value: `$${totalPaid.toLocaleString("en", { minimumFractionDigits: 2 })}`, icon: DollarSign, color: "bg-green-100 text-green-600" },
-      { label: "Pending", value: `$${totalPending.toLocaleString("en", { minimumFractionDigits: 2 })}`, icon: CreditCard, color: "bg-amber-100 text-amber-600" },
+      {
+        label: "Total Revenue",
+        value: `$${totalAll.toLocaleString("en", { minimumFractionDigits: 2 })}`,
+        icon: TrendingUp,
+        color: "bg-emerald-100 text-emerald-600",
+      },
+      {
+        label: "Collected",
+        value: `$${totalPaid.toLocaleString("en", { minimumFractionDigits: 2 })}`,
+        icon: DollarSign,
+        color: "bg-green-100 text-green-600",
+      },
+      {
+        label: "Pending",
+        value: `$${totalPending.toLocaleString("en", { minimumFractionDigits: 2 })}`,
+        icon: CreditCard,
+        color: "bg-amber-100 text-amber-600",
+      },
     ];
   }, [mode, totalAll, totalPaid, totalPending]);
 
-  const pageTitle = mode === "profit" ? "Profit" : mode === "bills" ? "Bills" : "Billing & Revenue";
+  const pageTitle =
+    mode === "profit"
+      ? "Profit"
+      : mode === "bills"
+        ? "Bills"
+        : "Billing & Revenue";
   const pageDesc =
     mode === "profit"
       ? "Your earnings from completed appointments"
@@ -194,12 +258,18 @@ export default function BillingPage() {
               <thead>
                 <tr className="border-b bg-muted/30">
                   <th className="text-left p-4 font-medium">Invoice #</th>
-                  {!isPatient && <th className="text-left p-4 font-medium">Patient</th>}
-                  {!isDoctor && <th className="text-left p-4 font-medium">Doctor</th>}
+                  {!isPatient && (
+                    <th className="text-left p-4 font-medium">Patient</th>
+                  )}
+                  {!isDoctor && (
+                    <th className="text-left p-4 font-medium">Doctor</th>
+                  )}
                   <th className="text-left p-4 font-medium">Date</th>
                   <th className="text-right p-4 font-medium">Amount</th>
                   <th className="text-left p-4 font-medium">Status</th>
-                  {mode === "bills" && <th className="text-left p-4 font-medium">Action</th>}
+                  {mode === "bills" && (
+                    <th className="text-left p-4 font-medium">Action</th>
+                  )}
                 </tr>
               </thead>
               <tbody>
@@ -215,7 +285,10 @@ export default function BillingPage() {
                     ))}
                 {!isLoading && invoiceList.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-muted-foreground">
+                    <td
+                      colSpan={6}
+                      className="p-8 text-center text-muted-foreground"
+                    >
                       {mode === "bills"
                         ? "No bills yet. Bills are created automatically when your doctor issues a prescription."
                         : mode === "profit"
@@ -225,14 +298,29 @@ export default function BillingPage() {
                   </tr>
                 )}
                 {invoiceList.map((inv: any) => (
-                  <tr key={inv.invoiceId} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+                  <tr
+                    key={inv.invoiceId}
+                    className="border-b last:border-0 hover:bg-muted/30 transition-colors"
+                  >
                     <td className="p-4 font-mono text-sm">#{inv.invoiceId}</td>
-                    {!isPatient && <td className="p-4 font-medium">{inv.patientName}</td>}
-                    {!isDoctor && <td className="p-4 text-muted-foreground">{inv.doctorName}</td>}
-                    <td className="p-4 text-muted-foreground">{inv.issueDate}</td>
-                    <td className="p-4 text-right font-semibold">${Number(inv.totalAmount).toFixed(2)}</td>
+                    {!isPatient && (
+                      <td className="p-4 font-medium">{inv.patientName}</td>
+                    )}
+                    {!isDoctor && (
+                      <td className="p-4 text-muted-foreground">
+                        {inv.doctorName}
+                      </td>
+                    )}
+                    <td className="p-4 text-muted-foreground">
+                      {inv.issueDate}
+                    </td>
+                    <td className="p-4 text-right font-semibold">
+                      ${Number(inv.totalAmount).toFixed(2)}
+                    </td>
                     <td className="p-4">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[inv.status] ?? ""}`}>
+                      <span
+                        className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[inv.status] ?? ""}`}
+                      >
                         {inv.status}
                       </span>
                     </td>
@@ -267,26 +355,41 @@ export default function BillingPage() {
           {selectedInvoice && (
             <div className="space-y-4 py-4">
               <div className="p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground">Invoice #{selectedInvoice.invoiceId}</p>
+                <p className="text-sm text-muted-foreground">
+                  Invoice #{selectedInvoice.invoiceId}
+                </p>
                 <p className="font-semibold">{selectedInvoice.patientName}</p>
-                <p className="text-2xl font-bold mt-1">${Number(selectedInvoice.totalAmount).toFixed(2)}</p>
+                <p className="text-2xl font-bold mt-1">
+                  ${Number(selectedInvoice.totalAmount).toFixed(2)}
+                </p>
               </div>
               <div className="space-y-2">
                 <Label>Amount</Label>
                 <Input
                   type="number"
                   value={payForm.amount}
-                  onChange={(e) => setPayForm((f) => ({ ...f, amount: e.target.value }))}
+                  onChange={(e) =>
+                    setPayForm((f) => ({ ...f, amount: e.target.value }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>Payment Method</Label>
-                <Select value={payForm.method} onValueChange={(v) => setPayForm((f) => ({ ...f, method: v }))}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
+                <Select
+                  value={payForm.method}
+                  onValueChange={(v) =>
+                    setPayForm((f) => ({ ...f, method: v }))
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="CARD">Credit/Debit Card</SelectItem>
                     <SelectItem value="CASH">Cash</SelectItem>
-                    <SelectItem value="DIGITAL_WALLET">Digital Wallet</SelectItem>
+                    <SelectItem value="DIGITAL_WALLET">
+                      Digital Wallet
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
