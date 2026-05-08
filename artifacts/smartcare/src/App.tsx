@@ -97,9 +97,14 @@ function Router() {
       )}
 
       {role == "PATIENT" && (
-        <Route path="/billing/bills">
-          <ProtectedRoute component={BillingPage} />
-        </Route>
+        <>
+          <Route path="/billing/bills">
+            <ProtectedRoute component={BillingPage} />
+          </Route>
+          <Route path="/profile">
+            <ProtectedRoute component={ProfilePage} />
+          </Route>
+        </>
       )}
 
       <Route path="/billing">
@@ -116,9 +121,6 @@ function Router() {
       </Route>
       <Route path="/notifications">
         <ProtectedRoute component={NotificationsPage} />
-      </Route>
-      <Route path="/profile">
-        <ProtectedRoute component={ProfilePage} />
       </Route>
       <Route path="/settings">
         <ProtectedRoute component={SettingsPage} />
