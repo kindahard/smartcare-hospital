@@ -17,7 +17,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pill, Trash2, Info, CheckCircle2 } from "lucide-react";
+import { Plus, Pill, Trash2, Info, CheckCircle2, TrendingUp, Building2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useToast } from "@/hooks/use-toast";
 
@@ -37,6 +37,19 @@ export default function PrescriptionsPage() {
   });
 
   const qc = useQueryClient();
+
+  // ── platform fee setting ──────────────────────────────────────────────────
+  const { data: platformSettings } = useQuery({
+    queryKey: ["/api/settings"],
+    queryFn: async () => {
+      const res = await fetch("/api/settings", { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) throw new Error("Failed to load settings");
+      return res.json() as Promise<{ feePercent: number }>;
+    },
+    enabled: isDoctor && !!token,
+    staleTime: 60000,
+  });
+  const feePercent = platformSettings?.feePercent ?? 10;
 
   // ── current user's profile ────────────────────────────────────────────────
   const { data: doctorMe } = useGetDoctorMe({
@@ -359,12 +372,31 @@ export default function PrescriptionsPage() {
                     }
                   />
                 </div>
-                {form.consultationFee && Number(form.consultationFee) > 0 && (
-                  <p className="text-xs text-emerald-600 flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" />
-                    A ${Number(form.consultationFee).toFixed(2)} invoice will be automatically created for this patient.
-                  </p>
-                )}
+                {form.consultationFee && Number(form.consultationFee) > 0 && (() => {
+                  const total = Number(form.consultationFee);
+                  const fee = parseFloat((total * feePercent / 100).toFixed(2));
+                  const net = parseFloat((total - fee).toFixed(2));
+                  return (
+                    <div className="rounded-lg border bg-muted/40 px-4 py-3 space-y-2">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground">Patient pays</span>
+                        <span className="font-semibold text-foreground">${total.toFixed(2)}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <Building2 className="w-3 h-3" /> Platform fee ({feePercent}%)
+                        </span>
+                        <span className="font-medium text-red-500">−${fee.toFixed(2)}</span>
+                      </div>
+                      <div className="border-t pt-2 flex items-center justify-between text-xs">
+                        <span className="flex items-center gap-1 font-medium text-foreground">
+                          <TrendingUp className="w-3 h-3 text-emerald-600" /> You receive
+                        </span>
+                        <span className="font-bold text-emerald-600">${net.toFixed(2)}</span>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
 
               {/* Drugs */}
