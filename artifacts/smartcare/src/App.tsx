@@ -18,6 +18,7 @@ import ClinicsPage from "@/pages/clinics";
 import SchedulePage from "@/pages/schedule";
 import DrugsPage from "@/pages/drugs";
 import LandingPage from "@/pages/landing";
+import ProfilePage from "@/pages/profile";
 import NotFound from "@/pages/not-found";
 
 const queryClient = new QueryClient({
@@ -88,6 +89,9 @@ function Router() {
       </Route>
       <Route path="/notifications">
         <ProtectedRoute component={NotificationsPage} />
+      </Route>
+      <Route path="/profile">
+        <ProtectedRoute component={ProfilePage} />
       </Route>
       <Route component={NotFound} />
     </Switch>

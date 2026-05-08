@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import {
   LayoutDashboard, Users, Stethoscope, Calendar, FileText,
-  Pill, CreditCard, Bell, LogOut, Menu, KeyRound, Building2, Wallet, TrendingUp
+  Pill, CreditCard, Bell, LogOut, Menu, KeyRound, Building2, Wallet, TrendingUp, UserCircle
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
@@ -29,6 +29,7 @@ const nav = [
   { label: "Profit", icon: TrendingUp, href: "/billing/profit", roles: ["DOCTOR"] },
   { label: "Billing", icon: Wallet, href: "/billing/revenue", roles: ["ADMIN"] },
   { label: "Notifications", icon: Bell, href: "/notifications", roles: ["ADMIN", "DOCTOR", "PATIENT"] },
+  { label: "My Profile", icon: UserCircle, href: "/profile", roles: ["PATIENT"] },
 ];
 
 interface LayoutProps {
