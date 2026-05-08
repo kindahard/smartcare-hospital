@@ -3,12 +3,15 @@ package com.smartcare.service;
 import com.smartcare.exception.BadRequestException;
 import com.smartcare.exception.UnauthorizedException;
 import com.smartcare.model.entity.AppUser;
+import com.smartcare.model.entity.Patient;
 import com.smartcare.model.enums.RoleEnum;
 import com.smartcare.repository.AppUserRepository;
+import com.smartcare.repository.PatientRepository;
 import com.smartcare.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -18,6 +21,7 @@ import java.util.Map;
 public class AuthService {
 
     private final AppUserRepository userRepository;
+    private final PatientRepository patientRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
@@ -41,6 +45,7 @@ public class AuthService {
         return result;
     }
 
+    @Transactional
     public Map<String, Object> register(String name, String email, String password, String role, String phoneNumber) {
         if (userRepository.existsByEmail(email)) {
             throw new BadRequestException("Email already registered");
@@ -66,6 +71,13 @@ public class AuthService {
                 .build();
 
         user = userRepository.save(user);
+
+        if (roleEnum == RoleEnum.PATIENT) {
+            Patient patient = Patient.builder()
+                    .user(user)
+                    .build();
+            patientRepository.save(patient);
+        }
 
         String token = jwtUtil.generateToken(user.getEmail(), user.getRole().name(), user.getUserId());
 
