@@ -22,7 +22,7 @@ public class Patient {
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
 
-    @Column(nullable = false, length = 10)
+    @Column(length = 10)
     private String gender;
 
     @Column(length = 500)

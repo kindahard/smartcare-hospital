@@ -17,9 +17,9 @@ public class Doctor {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private AppUser user;
 
-    @Column(nullable = false)
+    @Column
     private String specialty;
 
-    @Column(name = "license_number", nullable = false, unique = true)
+    @Column(name = "license_number", unique = true)
     private String licenseNumber;
 }

@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import {
   LayoutDashboard, Users, Stethoscope, Calendar, FileText,
-  Pill, CreditCard, Bell, LogOut, Menu, KeyRound, Building2, Wallet, TrendingUp
+  Pill, CreditCard, Bell, LogOut, Menu, KeyRound, Building2, Wallet, TrendingUp, UserCircle
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
@@ -29,6 +29,7 @@ const nav = [
   { label: "Profit", icon: TrendingUp, href: "/billing/profit", roles: ["DOCTOR"] },
   { label: "Billing", icon: Wallet, href: "/billing/revenue", roles: ["ADMIN"] },
   { label: "Notifications", icon: Bell, href: "/notifications", roles: ["ADMIN", "DOCTOR", "PATIENT"] },
+  { label: "Complete Profile", icon: UserCircle, href: "/complete-profile", roles: ["PATIENT", "DOCTOR"] },
 ];
 
 interface LayoutProps {
@@ -45,6 +46,25 @@ export default function Layout({ children }: LayoutProps) {
   const { toast } = useToast();
 
   const filteredNav = nav.filter(item => !user || item.roles.includes(user.role));
+
+  // Check if profile is incomplete (only for PATIENT / DOCTOR)
+  const needsProfile = user?.role === "PATIENT" || user?.role === "DOCTOR";
+  const { data: myProfile } = useQuery({
+    queryKey: ["profile-complete", user?.userId],
+    queryFn: async () => {
+      const url = user?.role === "PATIENT" ? "/api/patients/me" : "/api/doctors/me";
+      const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+      if (!res.ok) return null;
+      return res.json();
+    },
+    enabled: !!token && needsProfile,
+    staleTime: 60000,
+  });
+  const profileIncomplete = needsProfile && myProfile != null && (
+    user?.role === "PATIENT"
+      ? !myProfile.gender
+      : !myProfile.specialty || !myProfile.licenseNumber
+  );
 
   // Fetch unread notification count — polling every 30s
   const { data: notifications } = useQuery({
@@ -113,6 +133,7 @@ export default function Layout({ children }: LayoutProps) {
           {filteredNav.map(({ label, icon: Icon, href }) => {
             const active = location === href || location.startsWith(href + "/");
             const isNotifications = href === "/notifications";
+            const isCompleteProfile = href === "/complete-profile";
             return (
               <button
                 key={href}
@@ -120,6 +141,8 @@ export default function Layout({ children }: LayoutProps) {
                 className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   active
                     ? "bg-sidebar-primary text-sidebar-primary-foreground"
+                    : isCompleteProfile && profileIncomplete
+                    ? "text-orange-600 hover:bg-orange-50 dark:hover:bg-orange-950/30"
                     : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                 }`}
               >
@@ -131,6 +154,9 @@ export default function Layout({ children }: LayoutProps) {
                   }`}>
                     {unreadCount > 99 ? "99+" : unreadCount}
                   </span>
+                )}
+                {isCompleteProfile && profileIncomplete && (
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-500 shrink-0" title="Profile incomplete" />
                 )}
               </button>
             );
