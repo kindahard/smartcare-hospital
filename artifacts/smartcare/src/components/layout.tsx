@@ -23,7 +23,7 @@ const nav = [
   { label: "Clinics", icon: Building2, href: "/clinics", roles: ["ADMIN"] },
   { label: "My Schedule", icon: Building2, href: "/schedule", roles: ["DOCTOR"] },
   { label: "Drugs", icon: Pill, href: "/drugs", roles: ["ADMIN", "DOCTOR"] },
-  { label: "Medical Records", icon: FileText, href: "/medical-records", roles: ["ADMIN", "DOCTOR"] },
+  { label: "Medical Records", icon: FileText, href: "/medical-records", roles: ["ADMIN", "DOCTOR", "PATIENT"] },
   { label: "Prescriptions", icon: Pill, href: "/prescriptions", roles: ["ADMIN", "DOCTOR", "PATIENT"] },
   { label: "Bills", icon: CreditCard, href: "/billing/bills", roles: ["PATIENT"] },
   { label: "Profit", icon: TrendingUp, href: "/billing/profit", roles: ["DOCTOR"] },
