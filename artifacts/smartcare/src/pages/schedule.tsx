@@ -75,7 +75,9 @@ export default function SchedulePage() {
 
   const { data: allClinics } = useListClinics();
   const clinics = (allClinics ?? []).filter(
-    (c: any) => c.type?.toLowerCase() === profile?.specialty?.toLowerCase()
+    (c: any) =>
+      c.type?.toLowerCase().includes(profile?.specialty?.toLowerCase()) ||
+      profile?.specialty?.toLowerCase().includes(c.type?.toLowerCase())
   );
 
   const createMutation = useCreateClinicReservation({
