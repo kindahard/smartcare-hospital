@@ -46,7 +46,7 @@ function ProtectedRoute({
 }
 
 function Router() {
-  const { isAuthenticated } = useAuth();
+  const { role } = useAuth();
 
   return (
     <Switch>
@@ -56,20 +56,54 @@ function Router() {
       <Route path="/dashboard">
         <ProtectedRoute component={DashboardPage} />
       </Route>
-      <Route path="/patients">
-        <ProtectedRoute component={PatientsPage} />
-      </Route>
-      <Route path="/doctors">
-        <ProtectedRoute component={DoctorsPage} />
-      </Route>
-      <Route path="/clinics">
-        <ProtectedRoute component={ClinicsPage} />
-      </Route>
-      <Route path="/schedule">
-        <ProtectedRoute component={SchedulePage} />
-      </Route>
-      <Route path="/drugs">
-        <ProtectedRoute component={DrugsPage} />
+      {role == "ADMIN" && (
+        <>
+          <Route path="/patients">
+            <ProtectedRoute component={PatientsPage} />
+          </Route>
+          <Route path="/doctors">
+            <ProtectedRoute component={DoctorsPage} />
+          </Route>
+          <Route path="/clinics">
+            <ProtectedRoute component={ClinicsPage} />
+          </Route>
+          <Route path="/drugs">
+            <ProtectedRoute component={DrugsPage} />
+          </Route>
+          <Route path="/billing">
+            <ProtectedRoute component={BillingPage} />
+          </Route>
+          <Route path="/billing/revenue">
+            <ProtectedRoute component={BillingPage} />
+          </Route>
+        </>
+      )}
+
+      {role == "DOCTOR" && (
+        <>
+          <Route path="/schedule">
+            <ProtectedRoute component={SchedulePage} />
+          </Route>
+          <Route path="/drugs">
+            <ProtectedRoute component={DrugsPage} />
+          </Route>
+          <Route path="/billing">
+            <ProtectedRoute component={BillingPage} />
+          </Route>
+          <Route path="/billing/profit">
+            <ProtectedRoute component={BillingPage} />
+          </Route>
+        </>
+      )}
+
+      {role == "PATIENT" && (
+        <Route path="/billing/bills">
+          <ProtectedRoute component={BillingPage} />
+        </Route>
+      )}
+
+      <Route path="/billing">
+        <ProtectedRoute component={BillingPage} />
       </Route>
       <Route path="/appointments">
         <ProtectedRoute component={AppointmentsPage} />
@@ -79,18 +113,6 @@ function Router() {
       </Route>
       <Route path="/prescriptions">
         <ProtectedRoute component={PrescriptionsPage} />
-      </Route>
-      <Route path="/billing">
-        <ProtectedRoute component={BillingPage} />
-      </Route>
-      <Route path="/billing/bills">
-        <ProtectedRoute component={BillingPage} />
-      </Route>
-      <Route path="/billing/profit">
-        <ProtectedRoute component={BillingPage} />
-      </Route>
-      <Route path="/billing/revenue">
-        <ProtectedRoute component={BillingPage} />
       </Route>
       <Route path="/notifications">
         <ProtectedRoute component={NotificationsPage} />
