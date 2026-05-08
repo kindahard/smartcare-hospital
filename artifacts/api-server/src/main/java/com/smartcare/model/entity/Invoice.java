@@ -29,6 +29,12 @@ public class Invoice {
     @Column(name = "total_amount", nullable = false, precision = 10, scale = 2)
     private BigDecimal totalAmount;
 
+    @Column(name = "platform_fee", precision = 10, scale = 2)
+    private BigDecimal platformFee;
+
+    @Column(name = "net_amount", precision = 10, scale = 2)
+    private BigDecimal netAmount;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default

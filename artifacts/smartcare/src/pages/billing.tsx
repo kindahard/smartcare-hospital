@@ -197,7 +197,10 @@ export default function BillingPage() {
                   {!isPatient && <th className="text-left p-4 font-medium">Patient</th>}
                   {!isDoctor && <th className="text-left p-4 font-medium">Doctor</th>}
                   <th className="text-left p-4 font-medium">Date</th>
-                  <th className="text-right p-4 font-medium">Amount</th>
+                  <th className="text-right p-4 font-medium">Total</th>
+                  {isDoctor && <th className="text-right p-4 font-medium">Platform Fee</th>}
+                  {isDoctor && <th className="text-right p-4 font-medium">You Receive</th>}
+                  {isAdmin && <th className="text-right p-4 font-medium">Platform Fee</th>}
                   <th className="text-left p-4 font-medium">Status</th>
                   {mode === "bills" && <th className="text-left p-4 font-medium">Action</th>}
                 </tr>
@@ -231,6 +234,21 @@ export default function BillingPage() {
                     {!isDoctor && <td className="p-4 text-muted-foreground">{inv.doctorName}</td>}
                     <td className="p-4 text-muted-foreground">{inv.issueDate}</td>
                     <td className="p-4 text-right font-semibold">${Number(inv.totalAmount).toFixed(2)}</td>
+                    {isDoctor && (
+                      <td className="p-4 text-right text-sm text-red-500">
+                        {inv.platformFee != null ? `-$${Number(inv.platformFee).toFixed(2)}` : "—"}
+                      </td>
+                    )}
+                    {isDoctor && (
+                      <td className="p-4 text-right font-semibold text-emerald-600">
+                        {inv.netAmount != null ? `$${Number(inv.netAmount).toFixed(2)}` : "—"}
+                      </td>
+                    )}
+                    {isAdmin && (
+                      <td className="p-4 text-right text-sm text-primary font-medium">
+                        {inv.platformFee != null ? `$${Number(inv.platformFee).toFixed(2)}` : "—"}
+                      </td>
+                    )}
                     <td className="p-4">
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[inv.status] ?? ""}`}>
                         {inv.status}
