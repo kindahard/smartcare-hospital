@@ -265,7 +265,10 @@ export default function BillingPage() {
                     <th className="text-left p-4 font-medium">Doctor</th>
                   )}
                   <th className="text-left p-4 font-medium">Date</th>
-                  <th className="text-right p-4 font-medium">Amount</th>
+                  <th className="text-right p-4 font-medium">Total</th>
+                  {isDoctor && <th className="text-right p-4 font-medium">Platform Fee</th>}
+                  {isDoctor && <th className="text-right p-4 font-medium">You Receive</th>}
+                  {isAdmin && <th className="text-right p-4 font-medium">Platform Fee</th>}
                   <th className="text-left p-4 font-medium">Status</th>
                   {mode === "bills" && (
                     <th className="text-left p-4 font-medium">Action</th>
@@ -303,6 +306,7 @@ export default function BillingPage() {
                     className="border-b last:border-0 hover:bg-muted/30 transition-colors"
                   >
                     <td className="p-4 font-mono text-sm">#{inv.invoiceId}</td>
+<<<<<<< HEAD
                     {!isPatient && (
                       <td className="p-4 font-medium">{inv.patientName}</td>
                     )}
@@ -317,6 +321,27 @@ export default function BillingPage() {
                     <td className="p-4 text-right font-semibold">
                       ${Number(inv.totalAmount).toFixed(2)}
                     </td>
+=======
+                    {!isPatient && <td className="p-4 font-medium">{inv.patientName}</td>}
+                    {!isDoctor && <td className="p-4 text-muted-foreground">{inv.doctorName}</td>}
+                    <td className="p-4 text-muted-foreground">{inv.issueDate}</td>
+                    <td className="p-4 text-right font-semibold">${Number(inv.totalAmount).toFixed(2)}</td>
+                    {isDoctor && (
+                      <td className="p-4 text-right text-sm text-red-500">
+                        {inv.platformFee != null ? `-$${Number(inv.platformFee).toFixed(2)}` : "—"}
+                      </td>
+                    )}
+                    {isDoctor && (
+                      <td className="p-4 text-right font-semibold text-emerald-600">
+                        {inv.netAmount != null ? `$${Number(inv.netAmount).toFixed(2)}` : "—"}
+                      </td>
+                    )}
+                    {isAdmin && (
+                      <td className="p-4 text-right text-sm text-primary font-medium">
+                        {inv.platformFee != null ? `$${Number(inv.platformFee).toFixed(2)}` : "—"}
+                      </td>
+                    )}
+>>>>>>> ab2051e277b9280baae6d0b96b91052a5b04fbe5
                     <td className="p-4">
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${STATUS_COLORS[inv.status] ?? ""}`}

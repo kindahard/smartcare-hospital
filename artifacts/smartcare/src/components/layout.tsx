@@ -11,7 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import {
   LayoutDashboard, Users, Stethoscope, Calendar, FileText,
-  Pill, CreditCard, Bell, LogOut, Menu, KeyRound, Building2, Wallet, TrendingUp
+  Pill, CreditCard, Bell, LogOut, Menu, KeyRound, Building2, Wallet, TrendingUp, UserCircle, Settings2
 } from "lucide-react";
 import { useState, type ReactNode } from "react";
 
@@ -23,12 +23,14 @@ const nav = [
   { label: "Clinics", icon: Building2, href: "/clinics", roles: ["ADMIN"] },
   { label: "My Schedule", icon: Building2, href: "/schedule", roles: ["DOCTOR"] },
   { label: "Drugs", icon: Pill, href: "/drugs", roles: ["ADMIN", "DOCTOR"] },
-  { label: "Medical Records", icon: FileText, href: "/medical-records", roles: ["ADMIN", "DOCTOR"] },
+  { label: "Medical Records", icon: FileText, href: "/medical-records", roles: ["ADMIN", "DOCTOR", "PATIENT"] },
   { label: "Prescriptions", icon: Pill, href: "/prescriptions", roles: ["ADMIN", "DOCTOR", "PATIENT"] },
   { label: "Bills", icon: CreditCard, href: "/billing/bills", roles: ["PATIENT"] },
   { label: "Profit", icon: TrendingUp, href: "/billing/profit", roles: ["DOCTOR"] },
   { label: "Billing", icon: Wallet, href: "/billing/revenue", roles: ["ADMIN"] },
   { label: "Notifications", icon: Bell, href: "/notifications", roles: ["ADMIN", "DOCTOR", "PATIENT"] },
+  { label: "My Profile", icon: UserCircle, href: "/profile", roles: ["PATIENT"] },
+  { label: "Settings", icon: Settings2, href: "/settings", roles: ["ADMIN"] },
 ];
 
 interface LayoutProps {

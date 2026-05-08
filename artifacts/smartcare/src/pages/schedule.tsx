@@ -73,7 +73,12 @@ export default function SchedulePage() {
     enabled: !!profile?.doctorId,
   });
 
-  const { data: clinics } = useListClinics();
+  const { data: allClinics } = useListClinics();
+  const clinics = (allClinics ?? []).filter(
+    (c: any) =>
+      c.type?.toLowerCase().includes(profile?.specialty?.toLowerCase()) ||
+      profile?.specialty?.toLowerCase().includes(c.type?.toLowerCase())
+  );
 
   const createMutation = useCreateClinicReservation({
     mutation: {
@@ -274,16 +279,27 @@ export default function SchedulePage() {
           <div className="space-y-4 pt-2">
             <div className="space-y-1.5">
               <Label>Clinic</Label>
-              <Select value={form.clinicId} onValueChange={(v) => setForm((f) => ({ ...f, clinicId: v }))}>
-                <SelectTrigger><SelectValue placeholder="Select clinic..." /></SelectTrigger>
-                <SelectContent>
-                  {(clinics ?? []).map((c: any) => (
-                    <SelectItem key={c.clinicId} value={String(c.clinicId)}>
-                      {c.type} · Clinic #{c.clinicId}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              {clinics.length === 0 && profile ? (
+                <div className="rounded-md border border-dashed px-4 py-3 text-sm text-muted-foreground">
+                  No <span className="font-medium text-foreground">{profile.specialty}</span> clinics have been created yet. Ask an admin to add one first.
+                </div>
+              ) : (
+                <Select value={form.clinicId} onValueChange={(v) => setForm((f) => ({ ...f, clinicId: v }))}>
+                  <SelectTrigger><SelectValue placeholder="Select clinic..." /></SelectTrigger>
+                  <SelectContent>
+                    {clinics.map((c: any) => (
+                      <SelectItem key={c.clinicId} value={String(c.clinicId)}>
+                        {c.type} · Clinic #{c.clinicId}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+              {profile && clinics.length > 0 && (
+                <p className="text-xs text-muted-foreground">
+                  Showing only <span className="font-medium">{profile.specialty}</span> clinics matching your specialty.
+                </p>
+              )}
             </div>
             <div className="space-y-1.5">
               <Label>Day of Week</Label>

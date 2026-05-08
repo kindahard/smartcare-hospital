@@ -75,7 +75,7 @@ export default function LoginPage() {
                 <p>Password: admin123</p>
               </div>
               <button className="text-primary font-medium" onClick={() => setLocation("/signup")}>
-                Create a doctor/patient account
+                Create a patient account
               </button>
             </div>
           </CardContent>

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ public class InvoiceService {
 
     private final InvoiceRepository invoiceRepository;
     private final AppointmentRepository appointmentRepository;
+    private final PlatformSettingsService platformSettingsService;
 
     public List<Map<String, Object>> listInvoices(String status, Integer patientId, Integer doctorId) {
         List<Invoice> list;
@@ -71,10 +73,16 @@ public class InvoiceService {
                 ? BigDecimal.valueOf(((Number) amtObj).doubleValue())
                 : new BigDecimal(amtObj.toString());
 
+        BigDecimal feePercent = platformSettingsService.getCurrentFeePercent();
+        BigDecimal platformFee = totalAmount.multiply(feePercent).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+        BigDecimal netAmount = totalAmount.subtract(platformFee);
+
         Invoice inv = Invoice.builder()
                 .appointment(appointment)
                 .issueDate(LocalDate.now())
                 .totalAmount(totalAmount)
+                .platformFee(platformFee)
+                .netAmount(netAmount)
                 .status(InvoiceStatus.PENDING)
                 .build();
 
@@ -90,10 +98,16 @@ public class InvoiceService {
         return invoiceRepository.findByAppointmentAppointmentId(appointment.getAppointmentId())
                 .map(this::mapInvoice)
                 .orElseGet(() -> {
+                    BigDecimal feePercent = platformSettingsService.getCurrentFeePercent();
+                    BigDecimal platformFee = totalAmount.multiply(feePercent).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+                    BigDecimal netAmount = totalAmount.subtract(platformFee);
+
                     Invoice inv = Invoice.builder()
                             .appointment(appointment)
                             .issueDate(LocalDate.now())
                             .totalAmount(totalAmount)
+                            .platformFee(platformFee)
+                            .netAmount(netAmount)
                             .status(InvoiceStatus.PENDING)
                             .build();
                     return mapInvoice(invoiceRepository.save(inv));
@@ -121,6 +135,8 @@ public class InvoiceService {
         m.put("doctorName", inv.getAppointment().getDoctor().getUser().getName());
         m.put("issueDate", inv.getIssueDate() != null ? inv.getIssueDate().toString() : null);
         m.put("totalAmount", inv.getTotalAmount());
+        m.put("platformFee", inv.getPlatformFee());
+        m.put("netAmount", inv.getNetAmount());
         m.put("status", inv.getStatus().name());
         return m;
     }

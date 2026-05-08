@@ -7,15 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-
 export default function SignupPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [role, setRole] = useState("PATIENT");
   const [error, setError] = useState("");
   const { login } = useAuth();
   const [, setLocation] = useLocation();
@@ -39,7 +36,7 @@ export default function SignupPage() {
       setError("Passwords do not match.");
       return;
     }
-    registerMutation.mutate({ data: { name, email, password, role, phoneNumber } });
+    registerMutation.mutate({ data: { name, email, password, role: "PATIENT", phoneNumber } });
   };
 
   return (
@@ -56,7 +53,7 @@ export default function SignupPage() {
         <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>Create your account</CardTitle>
-            <CardDescription>Sign up as a doctor or patient. Admin access is managed separately.</CardDescription>
+            <CardDescription>Sign up as a patient to access SmartCare HMS.</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -72,16 +69,6 @@ export default function SignupPage() {
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="role">Role</Label>
-                <Select value={role} onValueChange={setRole}>
-                  <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="PATIENT">Patient</SelectItem>
-                    <SelectItem value="DOCTOR">Doctor</SelectItem>
-                  </SelectContent>
-                </Select>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="phone">Phone Number</Label>
