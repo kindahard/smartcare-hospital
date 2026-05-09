@@ -1753,7 +1753,7 @@ export const useCreateClinic = <
   mutation?: UseMutationOptions<
     Awaited<ReturnType<typeof createClinic>>,
     TError,
-    { data: BodyType<ClinicCreate> },
+    { data: String },
     TContext
   >;
   request?: SecondParameter<typeof customFetch>;
